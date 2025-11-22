@@ -1,32 +1,40 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'STAGE_NAME',
+            choices: ['Build', 'Test1', 'Test2'],
+            description: 'Select which stage to run'
+        )
+    }
+
     stages {
 
         stage('Build') {
+            when {
+                expression { params.STAGE_NAME == 'Build' }
+            }
             steps {
-                echo "Build stage running..."
+                echo "Running Build stage..."
             }
         }
 
-        stage('Parallel Tests') {
+        stage('Test1') {
             when {
-                branch 'master'   // ✅ Run this entire parallel block only on master
+                expression { params.STAGE_NAME == 'Test1' }
             }
-            parallel {
+            steps {
+                echo "Running Test1 stage..."
+            }
+        }
 
-                stage('Test1') {
-                    steps {
-                        echo "Running Test1 in parallel on master branch..."
-                    }
-                }
-
-                stage('Test2') {
-                    steps {
-                        echo "Running Test2 in parallel on master branch..."
-                    }
-                }
-
+        stage('Test2') {
+            when {
+                expression { params.STAGE_NAME == 'Test2' }
+            }
+            steps {
+                echo "Running Test2 stage..."
             }
         }
 
