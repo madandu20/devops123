@@ -1,42 +1,43 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(
-            name: 'STAGE_NAME',
-            choices: ['Build', 'Test1', 'Test2'],
-            description: 'Select which stage to run'
-        )
-    }
-
     stages {
 
-        stage('Build') {
-            when {
-                expression { params.STAGE_NAME == 'Build' }
-            }
+        stage('A') {
             steps {
-                echo "Running Build stage..."
+                script {
+                    echo "Running Stage A..."
+                    // Add your real commands here
+                    // Example command that may fail:
+                    // sh 'exit 1'
+                }
             }
         }
 
-        stage('Test1') {
+        stage('B') {
             when {
-                expression { params.STAGE_NAME == 'Test1' }
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo "Running Test1 stage..."
+                echo "Stage A succeeded → Running Stage B"
             }
         }
 
-        stage('Test2') {
+        stage('C') {
             when {
-                expression { params.STAGE_NAME == 'Test2' }
+                expression { currentBuild.result == 'FAILURE' }
             }
             steps {
-                echo "Running Test2 stage..."
+                echo "Stage A failed → Running Stage C"
             }
         }
+    }
 
+    post {
+        failure {
+            script {
+                currentBuild.result = 'FAILURE'
+            }
+        }
     }
 }
