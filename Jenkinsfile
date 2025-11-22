@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     parameters {
-        string(
+        choice(
             name: 'STAGE_TO_RUN',
-            defaultValue: 'A',
-            description: 'Enter the stage to run (A, B, or C)'
+            choices: ['A', 'B', 'C'],
+            description: 'Select the stage to run'
         )
     }
 
@@ -16,7 +16,7 @@ pipeline {
                 expression { params.STAGE_TO_RUN == 'A' }
             }
             steps {
-                echo "Running Stage A ..."
+                echo "Running Stage A..."
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
                 expression { params.STAGE_TO_RUN == 'B' }
             }
             steps {
-                echo "Running Stage B ..."
+                echo "Running Stage B..."
             }
         }
 
@@ -34,9 +34,8 @@ pipeline {
                 expression { params.STAGE_TO_RUN == 'C' }
             }
             steps {
-                echo "Running Stage C ..."
+                echo "Running Stage C..."
             }
         }
-
     }
 }
