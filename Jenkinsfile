@@ -10,8 +10,10 @@ pipeline {
 
         stage('B') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
-                sh 'exit 1'      // <-- this fails the build now
+                // If commands inside here fail, the build stays SUCCESS
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh 'exit 1'   // simulate failure
+                }
             }
         }
 
