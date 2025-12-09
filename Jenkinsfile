@@ -10,6 +10,7 @@ pipeline {
 
         stage('B') {
             steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
                 sh 'exit 1'      // <-- this fails the build now
             }
         }
